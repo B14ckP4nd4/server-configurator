@@ -1,9 +1,18 @@
 #!/usr/bin/env bash
 # https://github.com/B14ckP4nd4
 
+  source ~/.bash_profile
+
 # update Server
   echo 'assumeyes=1' >> /etc/yum.conf \
   && sudo yum --disablerepo=\* --enablerepo=base,updates update
+
+
+#check installion dir
+
+  if [ ! -d "$BASE_PATH/install" ]; then
+    mkdir -p "$BASE_PATH/install"
+  fi
 
 #install epel-release
 
