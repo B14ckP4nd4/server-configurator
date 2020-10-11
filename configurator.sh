@@ -1,23 +1,44 @@
 #!/usr/bin/env bash
 # https://github.com/B14ckP4nd4
 
-base="/var/cwn"
-
 # update Server
   echo 'assumeyes=1' >> /etc/yum.conf \
   && sudo yum --disablerepo=\* --enablerepo=base,updates update
 
 #install epel-release
 
-  if [[ ! -f "$base/install/epel-release" ]]; then
+  if [[ ! -f "$BASE_PATH/install/epel-release" ]]; then
       yum install epel-release \
       && yum update
-      touch "$base/install/epel-release"
+      touch "$BASE_PATH/install/epel-release"
   fi
 
 #install Development Tools
 
-  if [[ ! -f "$base/install/development-tools" ]]; then
+  if [[ ! -f "$BASE_PATH/install/development-tools" ]]; then
       yum group install "Development Tools"
-      touch "$base/install/development-tools"
+      touch "$BASE_PATH/install/development-tools"
+  fi
+
+# install docker
+
+  if [ ! -x "$(command -v docker)" ]; then
+    sudo yum install -y yum-utils \
+     device-mapper-persistent-data \
+     lvm2
+
+    sudo yum-config-manager \
+      --add-repo \
+      https://download.docker.com/linux/centos/docker-ce.repo
+
+    sudo yum install docker-ce docker-ce-cli containerd.io
+
+    # start Docker
+    sudo systemctl start docker && sudo systemctl enable docker
+  fi
+
+# create needed folders
+
+  if [ ! -d "$BASE_PATH/containers" ]; then
+    sudo mkdir "$BASE_PATH/containers"
   fi
