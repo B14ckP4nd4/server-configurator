@@ -51,3 +51,7 @@
   if [ ! -d "$BASE_PATH/containers" ]; then
     sudo mkdir "$BASE_PATH/containers"
   fi
+
+# create docker network
+
+docker network ls|grep $BASE_NET > /dev/null || docker create network $BASE_NET
