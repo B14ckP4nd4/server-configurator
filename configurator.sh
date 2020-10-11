@@ -12,10 +12,12 @@ base="/var/cwn"
   if [[ ! -f "$base/install/epel-release" ]]; then
       yum install epel-release \
       && yum update
+      touch "$base/install/epel-release"
   fi
 
 #install Development Tools
 
   if [[ ! -f "$base/install/development-tools" ]]; then
       yum group install "Development Tools"
+      touch "$base/install/development-tools"
   fi
