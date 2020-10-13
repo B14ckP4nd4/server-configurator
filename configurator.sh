@@ -83,13 +83,13 @@ docker network ls | grep $docker_base_network > /dev/null || docker create netwo
 # ==================================================
 
   # build and run squid container
-    # remove old repo
-    rm -rf $squid_path
-    # get new repo
-    git clone $squid_repo $squid_path
-    # set permitions for run
-    chmod +x "$squid_path/build.sh"
-    # hit it up
-    .$squid_path/build.sh
+  # remove old repo
+  rm -rf $squid_path
+  # get new repo
+  git clone $squid_repo $squid_path
+  # set permitions for run
+  chmod +x "$squid_path/build.sh"
+  # hit it up
+  .$squid_path/build.sh
 
 
