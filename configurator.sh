@@ -1,36 +1,60 @@
 #!/usr/bin/env bash
 # https://github.com/B14ckP4nd4
 
-  source ~/.bash_profile
+  # source
+  #. ~/.bash_profile
 
-# update Server
+
+# ==================================================
+# ================= UPDATE SERVER ==================
+# ==================================================
+
   echo 'assumeyes=1' >> /etc/yum.conf \
   && sudo yum --disablerepo=\* --enablerepo=base,updates update
 
+# ==================================================
+# ================= Default PATHs ==================
+# ==================================================
 
-#check installion dir
-
-  if [ ! -d "$BASE_PATH/install" ]; then
-    mkdir -p "$BASE_PATH/install"
+  #installed path
+  if [ ! -d "$installed_path" ]; then
+    mkdir -p "$installed_path"
   fi
 
-#install epel-release
+  #container path
+  if [ ! -d "$containers_path" ]; then
+    sudo mkdir "$containers_path"
+  fi
 
-  if [[ ! -f "$BASE_PATH/install/epel-release" ]]; then
+ #volumes path
+  if [ ! -d "$volumes_path" ]; then
+    mkdir -p "$volumes_path"
+  fi
+
+  #temp path
+  if [ ! -d "$temp_path" ]; then
+    mkdir -p "$temp_path"
+  fi
+
+# ==================================================
+# ============== Install Dependencies ==============
+# ==================================================
+
+
+  #install epel-release
+  if [[ ! -f "$installed_path/epel-release" ]]; then
       yum install epel-release \
       && yum update
-      touch "$BASE_PATH/install/epel-release"
+      touch "$installed_path/epel-release"
   fi
 
-#install Development Tools
-
-  if [[ ! -f "$BASE_PATH/install/development-tools" ]]; then
+  #install Development Tools
+  if [[ ! -f "$installed_path/development-tools" ]]; then
       yum group install "Development Tools"
-      touch "$BASE_PATH/install/development-tools"
+      touch "$installed_path/development-tools"
   fi
 
-# install docker
-
+  # install docker
   if [ ! -x "$(command -v docker)" ]; then
     sudo yum install -y yum-utils \
      device-mapper-persistent-data \
@@ -46,12 +70,26 @@
     sudo systemctl start docker && sudo systemctl enable docker
   fi
 
-# create needed folders
 
-  if [ ! -d "$BASE_PATH/containers" ]; then
-    sudo mkdir "$BASE_PATH/containers"
-  fi
+# ==================================================
+# ============= Network Configuration ==============
+# ==================================================
 
-# create docker network
+docker network ls | grep $docker_base_network > /dev/null || docker create network $docker_base_network
 
-docker network ls|grep $BASE_NET > /dev/null || docker create network $BASE_NET
+
+# ==================================================
+# =================== Containers ===================
+# ==================================================
+
+  # build and run squid container
+    # remove old repo
+    rm -rf $squid_path
+    # get new repo
+    git clone $squid_repo $squid_path
+    # set permitions for run
+    chmod +x "$squid_path/build.sh"
+    # hit it up
+    .$squid_path/build.sh
+
+
