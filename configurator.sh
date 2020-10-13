@@ -90,6 +90,6 @@ docker network ls | grep $docker_base_network > /dev/null || docker create netwo
   # set permitions for run
   chmod +x "$squid_path/build.sh"
   # hit it up
-  .$squid_path/build.sh
+  . $squid_path/build.sh
 
 
